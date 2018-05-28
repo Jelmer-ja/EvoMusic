@@ -1,52 +1,77 @@
 import pysynth
 import random
 import xlrd
-import xlwt
-import xlsxwriter
+import os
 import numpy as np
 
 class Population:
-    def __init__(self,population_size,nr_of_notes):
+    def __init__(self,population_size,nr_of_chords):
+        # Get the parameters
         self.key = Keys().cmajor()
         self.chords = Chords(self.key,4)
         self.population_size = population_size
-        self.nr_of_notes = nr_of_notes
+        self.nr_of_chords = nr_of_chords
         self.notes_per_chord = 3
+        chordsequence = self.chords.get_chord_sequence()
 
-        #chordsequence = self.chords.getChordSequence()
-        quit()
+        # Start the evolution process
         population = []
         for i in range(self.population_size):
-            population.append()
+            population.append(self.melody_from_chords(chordsequence))
 
         self.feasibles= [x for x in population if self.is_feasible(x)]
         self.infeasibles = [x for x in population if not self.is_feasible(x)]
+        self.export_to_mp3()
 
     # TODO: Generate from chord sequence instead of purely random
-    def random_melody(self):
-        output = [random.choice(range(0,14)) for i in range(self.nr_of_notes)]
+    def random_melody(self,nr_of_notes):
+        output = [random.choice(range(0,14)) for i in range(nr_of_notes)]
+
+    def melody_from_chords(self,chords):
+        output = []
+        for chord in chords:
+            for i in range(self.notes_per_chord):
+                output += [random.choice(self.chords.get_chord(chord))]
+        return output
 
     # Taken from MetaCompose paper
     def is_feasible(self, melody):
         output = True
-        leaps = [abs(melody[i] - melody[i+1]) for i in range(0,self.nr_of_notes-1)]
+        nr_of_notes = self.notes_per_chord*self.nr_of_chords
+        leaps = [abs(melody[i] - melody[i+1]) for i in range(0, nr_of_notes-1)]
         # A melody not  have  leaps between  notes  bigger  than  a  fifth (difference of 4)
         if [x for x in leaps if x > 4] is not []:
             output = False
         # A melody should contain at least 0.5 leaps of a second (difference of 1)
-        if len([x for x in leaps if x == 1]) < 0.5 * self.nr_of_notes:
+        if len([x for x in leaps if x == 1]) < 0.5 * nr_of_notes:
             output = False
         # Each note should be different than the preceding one
-        if True in [melody[i] == melody[i+1] for i in range(0,self.nr_of_notes-1)]:
+        if True in [melody[i] == melody[i+1] for i in range(0,nr_of_notes-1)]:
             output = False
         return output
 
     def export_to_mp3(self):
         # TODO: Add evolving rhythm or random rhythm to create variation in the music
-        rhythm = [3 for i in range(self.nr_of_notes)]
+        # Check if output folder exists
+        if not (os.path.isdir('output/feasibles') & os.path.isdir('output/infeasibles')):
+            try:
+                os.makedirs('output/feasibles')
+                os.makedirs('output/infeasibles')
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+
+        # Write melodies to wav
+        nr_of_notes = self.notes_per_chord * self.nr_of_chords
+        rhythm = [3 for i in range(nr_of_notes)]
         for melody in self.feasibles:
-            melody2 = [(melody[i], rhythm[i]) for i in range(self.nr_of_notes)]
-            pysynth.make_wav(melody2, fn="output/" + str(self.feasibles.index(melody)) + ".wav")
+            # Convert melody from numerical notation to string notes
+            melody2 = [(self.key[melody[i]], rhythm[i]) for i in range(nr_of_notes)]
+            pysynth.make_wav(melody2, fn="output/feasibles/" + str(self.feasibles.index(melody)) + ".wav")
+        for melody in self.infeasibles:
+            # Convert melody from numerical notation to string notes
+            melody2 = [(self.key[melody[i]], rhythm[i]) for i in range(nr_of_notes)]
+            pysynth.make_wav(melody2, fn="output/infeasibles/" + str(self.infeasibles.index(melody)) + ".wav")
 
 
 #TODO: add more scales
@@ -63,6 +88,8 @@ class Chords:
         self.key = key
         self.nr_of_chords = nr_of_chords
         self.chorddict = dict()
+        self.name_list = ['I','II','III','IV','V','VI','VII']
+
         #Define chord degrees
         self.chorddict['I'] = [0,2,4]
         self.chorddict['II'] = [1,3,5]
@@ -82,17 +109,28 @@ class Chords:
         """
 
     def get_chord(self,name):
-        return [key[i] for i in self.chorddict[name]]
+        return self.chorddict[name]
 
     def get_chord_sequence(self):
-        workbook = xlsxwriter.Workbook('chords.xls')
-        sheet = workbook.add_worksheet()
+        # Get the chord sequence graph from the xls file
+        workbook = xlrd.open_workbook("chords.xls")
+        sheet = workbook.sheet_by_index(0)
         matrix = []
-        for row in range(sheet.nrows):
+        for row in range(1,sheet.nrows):
             _row = []
-            for col in range(sheet.ncols):
+            for col in range(1,sheet.ncols):
                 _row.append(sheet.cell_value(row, col))
             matrix.append(_row)
-        print(matrix)
+
+        # Use the probabilities to generate a unique chord sequence
+        starting_chord = random.choice(range(0,7))
+        output_chords = [starting_chord]
+        for i in range(0,self.nr_of_chords-1):
+            probabilities = matrix[output_chords[-1]]
+            next_chords = [i for i in range(0,7) if probabilities[i] == 1]
+            output_chords.append(random.choice(next_chords))
+
+        # Convert chords to string notation and return
+        return [self.name_list[i] for i in output_chords]
 
 
