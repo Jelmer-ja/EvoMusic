@@ -37,8 +37,9 @@ class Population:
         # TODO: Add evolving rhythm or random rhythm to create variation in the music
         rhythm = [3 for i in range(self.nr_of_notes)]
         for melody in self.feasibles:
-            melody2 = [(melody[i],rhythm[i]) for i in range(self.nr_of_notes)]
+            melody2 = [(melody[i], rhythm[i]) for i in range(self.nr_of_notes)]
             pysynth.make_wav(melody2, fn="output/" + str(self.feasibles.index(melody)) + ".wav")
+
 
 #TODO: add more scales
 class Keys:
@@ -47,3 +48,27 @@ class Keys:
 
     def dminor(self):
         return['d3','e3','f3','g3','a3','bd3','c4','d4','e4','f4','g4','a4','bd4','c5']
+
+
+class Chords:
+    self.chorddict = dict()
+
+    def __init__():
+        self.chorddict['I'] = [0,2,4]
+        self.chorddict['II'] = [1,3,5]
+        self.chorddict['III'] = [2,4,6]
+        self.chorddict['IV'] = [3,5,7]
+        self.chorddict['V'] = [4,6,8]
+        self.chorddict['VI'] = [5,7,9]
+        self.chorddict['VII'] = [6,8,10]
+        self.chorddict['I7'] = [0, 2, 4,6]
+        self.chorddict['II7'] = [1, 3, 5,7]
+        self.chorddict['III7'] = [2, 4, 6,8]
+        self.chorddict['IV7'] = [3, 5, 7,9]
+        self.chorddict['V7'] = [4, 6, 8,10]
+        self.chorddict['VI7'] = [5, 7, 9,11]
+        self.chorddict['VII7'] = [6, 8, 10,12]
+
+    def getChord(self,name):
+        return self.chorddict[name]
+
