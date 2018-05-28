@@ -1,15 +1,23 @@
 import pysynth
 import random
-
+import xlrd
+import xlwt
+import xlsxwriter
+import numpy as np
 
 class Population:
     def __init__(self,population_size,nr_of_notes):
         self.key = Keys().cmajor()
+        self.chords = Chords(self.key,4)
         self.population_size = population_size
         self.nr_of_notes = nr_of_notes
+        self.notes_per_chord = 3
+
+        #chordsequence = self.chords.getChordSequence()
+        quit()
         population = []
         for i in range(self.population_size):
-            population.append(self.random_melody())
+            population.append()
 
         self.feasibles= [x for x in population if self.is_feasible(x)]
         self.infeasibles = [x for x in population if not self.is_feasible(x)]
@@ -51,9 +59,11 @@ class Keys:
 
 
 class Chords:
-    self.chorddict = dict()
-
-    def __init__():
+    def __init__(self, key, nr_of_chords):
+        self.key = key
+        self.nr_of_chords = nr_of_chords
+        self.chorddict = dict()
+        #Define chord degrees
         self.chorddict['I'] = [0,2,4]
         self.chorddict['II'] = [1,3,5]
         self.chorddict['III'] = [2,4,6]
@@ -61,6 +71,7 @@ class Chords:
         self.chorddict['V'] = [4,6,8]
         self.chorddict['VI'] = [5,7,9]
         self.chorddict['VII'] = [6,8,10]
+        """
         self.chorddict['I7'] = [0, 2, 4,6]
         self.chorddict['II7'] = [1, 3, 5,7]
         self.chorddict['III7'] = [2, 4, 6,8]
@@ -68,7 +79,20 @@ class Chords:
         self.chorddict['V7'] = [4, 6, 8,10]
         self.chorddict['VI7'] = [5, 7, 9,11]
         self.chorddict['VII7'] = [6, 8, 10,12]
+        """
 
-    def getChord(self,name):
-        return self.chorddict[name]
+    def get_chord(self,name):
+        return [key[i] for i in self.chorddict[name]]
+
+    def get_chord_sequence(self):
+        workbook = xlsxwriter.Workbook('chords.xls')
+        sheet = workbook.add_worksheet()
+        matrix = []
+        for row in range(sheet.nrows):
+            _row = []
+            for col in range(sheet.ncols):
+                _row.append(sheet.cell_value(row, col))
+            matrix.append(_row)
+        print(matrix)
+
 
