@@ -5,7 +5,7 @@ from population import Population
 #TODO: Decide which version of pysynth to use. Many different instrument-like sounds are possible
 def main():
     nr_of_generations = 100
-    pop = Population(population_size=30,nr_of_chords=4)
+    pop = Population(population_size=30,nr_of_chords=4,epochs=100)
 
 
 def test():

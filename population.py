@@ -4,26 +4,31 @@ import xlrd
 import os
 import numpy as np
 
+
 class Population:
-    def __init__(self,population_size,nr_of_chords):
+    def __init__(self,population_size,nr_of_chords,epochs):
         # Get the parameters
         self.key = Keys().cmajor()
         self.chords = Chords(self.key,4)
         self.population_size = population_size
         self.nr_of_chords = nr_of_chords
         self.notes_per_chord = 3
-        chordsequence = self.chords.get_chord_sequence()
+        self.chord_sequence = self.chords.get_chord_sequence()
 
-        # Start the evolution process
+        # Create a population and sort them into feasible or infeasible melodies
         population = []
         for i in range(self.population_size):
-            population.append(self.melody_from_chords(chordsequence))
-
+            population.append(self.melody_from_chords(self.chord_sequence))
         self.feasibles= [x for x in population if self.is_feasible(x)]
         self.infeasibles = [x for x in population if not self.is_feasible(x)]
+
+        # Start the evolution process
+        for i in range(0,1):
+            fitnesses = [[self.fitness(x) for x in self.feasibles],[self.fitness(x) for x in self.infeasibles]]
+            print(fitnesses)
+
         self.export_to_mp3()
 
-    # TODO: Generate from chord sequence instead of purely random
     def random_melody(self,nr_of_notes):
         output = [random.choice(range(0,14)) for i in range(nr_of_notes)]
 
@@ -50,6 +55,33 @@ class Population:
             output = False
         return output
 
+    def fitness(self,melody):
+        score = 0
+        exact_chords = [self.chords.get_chord(x) for x in self.chord_sequence]
+        nr_of_notes = self.notes_per_chord * self.nr_of_chords
+        leaps = [melody[i + 1] - melody[i] for i in range(0, nr_of_notes - 1)]
+        abs_leaps = [abs(melody[i] - melody[i + 1]) for i in range(0, nr_of_notes - 1)]
+
+        # The melody should approach and  follow  big leaps (larger than a second) in a counter step-wise motion
+        for i in range(1, len(leaps)-1):
+            if abs(leaps[i]) > 1:
+                if leaps[i] > 0:
+                    if leaps[i-1] == -1 and leaps[i+1] == -1:
+                        score += 1/len(leaps)
+                if leaps[i] < 0:
+                    if leaps[i-1] == 1 and leaps[i+1] == 1:
+                        score += 1/len(leaps)
+        # Where the melody presents big leaps, notes should belong to the underlying chord
+        big_leap_indices = [(i,i+1) for i in range(0,nr_of_notes-1)]
+        for i in big_leap_indices:
+            # Right now the implementation is such that a point is assigned if the first note of the leap belongs to its
+            # chord, and the second note belongs to the chord of the first
+            if melody[i[0]] in exact_chords[i[0]//self.notes_per_chord] and melody[i[1]] in exact_chords[i[0]//self.notes_per_chord]:
+                score += 1/len(leaps)
+        # The first note played on a chord should be part of the chord
+        score += 1 * (sum([1 for i in range(self.nr_of_chords) if melody[i*self.notes_per_chord] in exact_chords[i]]) / self.nr_of_chords)
+        return score
+
     def export_to_mp3(self):
         # TODO: Add evolving rhythm or random rhythm to create variation in the music
         # Check if output folder exists
@@ -58,7 +90,7 @@ class Population:
                 os.makedirs('output/feasibles')
                 os.makedirs('output/infeasibles')
             except OSError as e:
-                if e.errno != errno.EEXIST:
+                if e.errno != e.errno.EEXIST:
                     raise
 
         # Write melodies to wav
