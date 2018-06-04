@@ -12,7 +12,7 @@ class Population:
         # Get the parameters
         self.key = Keys().cmajor()
         self.chords = Chords(self.key, 4)
-        self.mutation_rate = 0.1 # Chance for every note to switch up or down during mutation
+        self.mutation_rate = 0.05 # Chance for every note to switch up or down during mutation
         self.env_pressure = 4 # How many individuals procreate per generation
         self.population_size = population_size
         self.nr_of_chords = nr_of_chords
@@ -38,7 +38,7 @@ class Population:
         print('Highest fitness: ' + str(np.max([self.fitness(x) for x in results])))
         print('Average fitness: ' + str(np.mean([self.fitness(x) for x in results])))
         print('Standard deviation: ' + str(np.std([self.fitness(x) for x in results])))
-        # self.export_to_mp3()
+        self.export_to_mp3()
 
     def random_melody(self,nr_of_notes):
         output = [random.choice(range(0,14)) for i in range(nr_of_notes)]
@@ -51,7 +51,7 @@ class Population:
         return output
 
     def mutate(self, genome):
-        #TODO: mutate genome in a gaussian distribution
+        # TODO: mutate genome in a gaussian distribution
         output = []
         for i in range(0,len(genome)):
             chance = random.random()
@@ -101,14 +101,14 @@ class Population:
     def is_feasible(self, melody):
         output = True
         leaps = [abs(melody[i] - melody[i+1]) for i in range(0, self.nr_of_notes-1)]
-        # A melody not  have  leaps between  notes  bigger  than  a  fifth (difference of 4)
+        # A melody not have leaps between notes bigger than a fifth (difference of 4)
         if [x for x in leaps if x > 4] is not []:
             output = False
         # A melody should contain at least 0.5 leaps of a second (difference of 1)
-        if len([x for x in leaps if x == 1]) < 0.5 * self.nr_of_notes:
+        if len([x for x in leaps if x == 1]) > 0.5 * self.nr_of_notes:
             output = False
         # Each note should be different than the preceding one
-        if True in [melody[i] == melody[i+1] for i in range(0,self.nr_of_notes-1)]:
+        if 0 in leaps:
             output = False
         return output
 
