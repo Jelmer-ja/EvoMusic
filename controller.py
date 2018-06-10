@@ -1,10 +1,11 @@
 import pysynth
-from population import Population
+# from population import Population
+from singlepopulation import Population
 
 
-#TODO: Decide which version of pysynth to use. Many different instrument-like sounds are possible
+# TODO: Decide which version of pysynth to use. Many different instrument-like sounds are possible
 def main():
-    pop = Population(population_size=50,nr_of_chords=4,epochs=200)
+    pop = Population(population_size=30,nr_of_chords=4,epochs=300)
 
 
 def test():
