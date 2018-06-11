@@ -95,7 +95,7 @@ class Population:
             self.population = [self.mutate(fi_p[i//self.env_pressure], epoch) for i in range(len(self.population))]
         else:
             # Sexual reproduction
-            self.population = [self.reproduce(fi_p[i // self.env_pressure], fi_p[i // self.env_pressure+1], epoch) for i in range(self.population_size-1)]
+            self.population = [self.reproduce(fi_p[i // self.env_pressure], fi_p[i // self.env_pressure+1], epoch) for i in range(len(self.population))]
 
     def fitness(self, melody):
         score = 0
