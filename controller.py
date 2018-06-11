@@ -1,5 +1,6 @@
 import pysynth
 import matplotlib.pyplot as plt
+import itertools
 # from population import Population
 from singlepopulation import Population
 
@@ -10,17 +11,20 @@ def main():
     mutation_dims = [1,0.99,0.95,0.9,0.8]
     env_pressures = [1,2,3,4,5,10,15]
     results = []
-    for i in range(0,len(mutation_rates)):
-        pop = Population(population_size=100, nr_of_chords=4, epochs=100,mutation_rate=mutation_rates[i])
+
+    grid = list(itertools.product(mutation_rates, env_pressures))
+
+    for combination in grid:
+        print('mutation rate: ', combination[0], '   env pressure', combination[1])
+        pop = Population(population_size=100, nr_of_chords=4, epochs=100, mutation_rate=combination[0], env_pressure=int(combination[1]))
         avg,highest,std,uniques = pop.get_results()
+        print("Average: ", avg, "highest: ", highest)
         results.append(avg)
 
-    plt.plot(mutation_rates,results)
-    plt.xlabel('Mutation rate')
-    plt.ylabel('Average score')
-    plt.show()
 
-
+    #[zip(x,list2) for x in itertools.permutations(list1,len(list2))]
+    #for combination in grid:
+    #    print('mutation rate: ', combination[0], '   env pressure', combination[1])
 
 
 
