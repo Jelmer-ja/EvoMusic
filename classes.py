@@ -12,7 +12,7 @@ class Keys:
         return ['c3','d3','e3','f3','g3','a3','b3','c4','d4','e4','f4','g4','a4','b4']
 
     def dminor(self):
-        return['d3','e3','f3','g3','a3','bd3','c4','d4','e4','f4','g4','a4','bd4','c5']
+        return ['d3','e3','f3','g3','a3','bb3','c4','d4','e4','f4','g4','a4','bb4','c5']
 
 
 class Chords:

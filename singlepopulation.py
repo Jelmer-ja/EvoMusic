@@ -9,13 +9,13 @@ from classes import Chords, Keys
 
 
 class Population:
-    def __init__(self,population_size,nr_of_chords,epochs):
+    def __init__(self,population_size,nr_of_chords,epochs,mutation_rate=0.05,mutation_dim=1.0,env_pressure=2):
         # Get the parameters
         self.key = Keys().cmajor()
         self.chords = Chords(self.key, 4)
-        self.mutation_rate = 0.05  # Chance for every note to switch up or down during mutation
-        self.mutation_diminution = 1  # How much of the mutation rate remains each epoch
-        self.env_pressure = 4  # What part of the population procreates per generation
+        self.mutation_rate = mutation_rate  # Chance for every note to switch up or down during mutation
+        self.mutation_diminution = mutation_dim  # How much of the mutation rate remains each epoch
+        self.env_pressure = env_pressure  # What part of the population procreates per generation
         self.population_size = population_size
         self.nr_of_chords = nr_of_chords
         self.notes_per_chord = 4
@@ -30,14 +30,22 @@ class Population:
         # Start the evolution process
         for i in range(0,epochs):
             self.evolve(sexual=True, epoch=i)
+            # print(i)
 
         # Print results
         results = self.population
-        print('Nr of unique melodies = ' + str(len(set(tuple(x) for x in results))))
-        print('Highest fitness: ' + str(np.max([self.fitness(x) for x in results])))
-        print('Average fitness: ' + str(np.mean([self.fitness(x) for x in results])))
-        print('Standard deviation: ' + str(np.std([self.fitness(x) for x in results])))
+        self.standard_deviation = len(set(tuple(x) for x in results))
+        self.highest_fitness = np.max([self.fitness(x) for x in results])
+        self.average_fitness = np.mean([self.fitness(x) for x in results])
+        self.nr_of_uniques = np.std([self.fitness(x) for x in results])
+        print('Nr of unique melodies = ' + str(self.nr_of_uniques))
+        print('Highest fitness: ' + str(self.highest_fitness))
+        print('Average fitness: ' + str(self.average_fitness))
+        print('Standard deviation: ' + str(self.standard_deviation))
         #self.export_to_mp3()
+
+    def get_results(self):
+        return self.average_fitness,self.highest_fitness,self.standard_deviation,self.nr_of_uniques
 
     def random_melody(self, nr_of_notes):
         output = [random.choice(range(0,14)) for i in range(nr_of_notes)]
