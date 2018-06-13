@@ -9,7 +9,7 @@ from classes import Chords, Keys
 
 
 class Population:
-    def __init__(self,population_size,nr_of_chords,epochs,mutation_rate=0.05,mutation_dim=1.0,env_pressure=2):
+    def __init__(self,population_size,nr_of_chords,epochs,mutation_rate=0.04,mutation_dim=1.0,env_pressure=2):
         # Get the parameters
         self.key = Keys().cmajor()
         self.chords = Chords(self.key, 4)
@@ -34,15 +34,15 @@ class Population:
 
         # Print results
         results = self.population
-        self.standard_deviation = len(set(tuple(x) for x in results))
+        self.nr_of_uniques = len(set(tuple(x) for x in results))
         self.highest_fitness = np.max([self.fitness(x) for x in results])
         self.average_fitness = np.mean([self.fitness(x) for x in results])
-        self.nr_of_uniques = np.std([self.fitness(x) for x in results])
+        self.standard_deviation = np.std([self.fitness(x) for x in results])
         print('Nr of unique melodies = ' + str(self.nr_of_uniques))
         print('Highest fitness: ' + str(self.highest_fitness))
         print('Average fitness: ' + str(self.average_fitness))
         print('Standard deviation: ' + str(self.standard_deviation))
-        #self.export_to_mp3()
+        self.export_experiment()
 
     def get_results(self):
         return self.average_fitness,self.highest_fitness,self.standard_deviation,self.nr_of_uniques
@@ -103,8 +103,9 @@ class Population:
         leaps = [melody[i + 1] - melody[i] for i in range(0, self.nr_of_notes - 1)]
         abs_leaps = [abs(melody[i] - melody[i + 1]) for i in range(0, self.nr_of_notes - 1)]
         median_notes = [int(mode([x[i] for x in self.population]), ) for i in range(0,self.nr_of_notes)]
-        scores = [0,0,0,0,0,0,0,0]
+        scores = [0,0,0,0,0,0,0]
 
+        """
         # Original score criteria
         # The melody should approach and follow  big leaps (larger than a second) in a counter step-wise motion
         for i in range(1, len(leaps)-1):
@@ -147,13 +148,13 @@ class Population:
         sn = 1 * sum([1 for x in leaps if x == 0]) / len(leaps)
         score -= sn
         scores[5] -= sn
-
+        
         # New custom criteria:
         # Increase the score for every note that is not the same as the average population note
-        anti_incest = 3 * sum([1 for i in range(0,self.nr_of_notes) if melody[i] != median_notes[i]]) / self.nr_of_notes
+        anti_incest = 1 * sum([1 for i in range(0,self.nr_of_notes) if melody[i] != median_notes[i]]) / self.nr_of_notes
         score += anti_incest
         scores[6] += anti_incest
-
+        """
         #print(scores)
         return score
 
@@ -176,6 +177,25 @@ class Population:
             # Convert melody from numerical notation to string notes
             melody2 = [(self.key[melody[i]], rhythm[i]) for i in range(nr_of_notes)]
             pysynth.make_wav(melody2, fn="output/single/" + str(self.population.index(melody)) + ".wav")
+
+    def export_experiment(self):
+        # TODO: Add evolving rhythm or random rhythm to create variation in the music
+        # Delete and recreate output folder
+        if (os.path.isdir('output/single')):
+            shutil.rmtree('output/single')
+        try:
+            os.makedirs('output/single')
+        except OSError as e:
+            if e.errno != e.errno.EEXIST:
+                pass #raise
+
+        # Write melodies to wav
+        self.population = list(reversed(sorted(self.population, key=self.fitness)))  # Sort by fitness
+        nr_of_notes = self.notes_per_chord * self.nr_of_chords
+        rhythm = [3 for i in range(nr_of_notes)]
+        melody = self.population[0]
+        melody2 = [(self.key[melody[i]], rhythm[i]) for i in range(nr_of_notes)]
+        pysynth.make_wav(melody2, fn="output/single/nofit8.wav")
 
 
 def mode(list):
