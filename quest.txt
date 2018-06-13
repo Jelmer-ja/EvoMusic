@@ -1,0 +1,53 @@
+To take part in this short study you will watch short video where you will listen to a number
+of short melodies. While listening to the melodies a number will be displayed on the screen. 
+Please rate each of the melodies on a scale from 1 to 7. Where 1 means that the melody was awful 
+to listen to and 7 means that the melody was very pleasant to listen to.
+
+When sending back this questionnaire you give consent that we can analyze and publish the collected data for scientific purposes. 
+All data will be anonymous and no information other than the rating of the melodies will be collected.
+
+Best regards,
+Jelmer Jansen and Tristan Payer
+
+
+Melodie 	|Rating
+01			|
+02			|
+03			|
+04			|
+05			|
+06			|
+07			|
+08			|
+09			|
+10			|
+11			|
+12			|
+13			|
+14			|
+15			|
+16			|
+17			|
+18			|
+19			|
+20			|
+21			|
+22			|
+23			|
+24			|
+25			|
+26			|
+27			|
+28			|
+29			|
+30			|
+31			|
+32			|
+33			|
+34			|
+35			|
+36			|
+37			|
+38			|
+39			|
+40			|
