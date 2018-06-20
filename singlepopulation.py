@@ -42,7 +42,7 @@ class Population:
         print('Highest fitness: ' + str(self.highest_fitness))
         print('Average fitness: ' + str(self.average_fitness))
         print('Standard deviation: ' + str(self.standard_deviation))
-        # self.export_experiment()
+        self.export_to_mp3()
 
     def get_results(self):
         return self.average_fitness,self.highest_fitness,self.standard_deviation,self.nr_of_uniques
@@ -155,7 +155,7 @@ class Population:
         score += anti_incest
         scores[6] += anti_incest
 
-        print(scores)
+        #print(scores)
         return score
 
     def export_to_mp3(self):
