@@ -10,7 +10,7 @@ git clone --recursive https://github.com/Jelmer-ja/EvoMusic.git.
 
 ## Step 2
 Open the `controller.py` file and edit the parameters that you want to run the system with. These are specified in the `main()` function at the top of the class. The standard parameters include the population size, number of chords and epochs. 
-However, the `Population` class from `population.py` also takes the optional arguments `mutation_rate`, `mutation_dim` and `env_pressure`, which represent the mutation rate, mutation diminition rate per epoch and environmental pressure respectively. 
+However, the `Population` class from `singlepopulation.py` also takes the optional arguments `mutation_rate`, `mutation_dim` and `env_pressure`, which represent the mutation rate, mutation diminition rate per epoch and environmental pressure respectively. 
 
 ![alt text](https://i.imgur.com/puG3GEQ.png)
 
