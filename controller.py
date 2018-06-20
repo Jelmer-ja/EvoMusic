@@ -7,16 +7,16 @@ from random import shuffle
 from singlepopulation import Population
 
 
-# TODO: Decide which version of pysynth to use. Many different instrument-like sounds are possible
+# Many different instrument-like sounds are possible for different versions of PySynth
 def main():
-    #pop = Population(population_size=100, nr_of_chords=4, epochs=100)
+    pop = Population(population_size=100, nr_of_chords=4, epochs=100)
     #statistics_mutation()
     #statistics_dims()
-    statistics_env()
+    #statistics_env()
     #grid_search()
     #print_random_list()
 
-
+#Used to generate the random order of melodies in the experiment. 
 def print_random_list():
     # Final order: ['second34', 'full4', 'second35', 'second33', 'full6', 'full3', 'nofit7', 'nofit8', 'full1',
     # 'first31', 'third6', 'first33', 'nofit1', 'full5', 'first37', 'third1', 'third7', 'first32', 'full2', 'first38',
@@ -49,8 +49,6 @@ def grid_search():
 
     print('\n\nBest combination = ' + str(grid[results.index(np.max(results))]) )
     print('Best combination by highest = ' + str(grid[hiresults.index(np.max(hiresults))]) )
-
-
 
 def statistics_mutation():
     mutation_rates = [0.001, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.15]
