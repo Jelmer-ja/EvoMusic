@@ -12,12 +12,12 @@ git clone --recursive https://github.com/Jelmer-ja/EvoMusic.git.
 Open the `controller.py` file and edit the parameters that you want to run the system with. These are specified in the `main()` function at the top of the class. The standard parameters include the population size, number of chords and epochs. 
 However, the `Population` class from `population.py` also takes the optional arguments `mutation_rate`, `mutation_dim` and `env_pressure`, which represent the mutation rate, mutation diminition rate per epoch and environmental pressure respectively. 
 
-![alt text](https://i.imgur.com/NasqbJZ.png)
+![alt text](https://i.imgur.com/puG3GEQ.png)
 
 ## Step 3 (optional)
 Further parameters, including the number of notes per chord and the scale used by the algorithm can be altered in the `__init__()` function of the file `singlepopulation.py`.
 
-![alt text](https://i.imgur.com/HLPAjgz.png)
+![alt text](https://i.imgur.com/NasqbJZ.png)
 
 ## Step 4
 Run `controller.py`. The algorithm should then run the algorithm and export the population of melodies to .mp3 files in the /output/single folder. 
