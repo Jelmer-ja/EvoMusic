@@ -42,7 +42,7 @@ class Population:
         print('Highest fitness: ' + str(self.highest_fitness))
         print('Average fitness: ' + str(self.average_fitness))
         print('Standard deviation: ' + str(self.standard_deviation))
-        self.export_experiment()
+        # self.export_experiment()
 
     def get_results(self):
         return self.average_fitness,self.highest_fitness,self.standard_deviation,self.nr_of_uniques
@@ -105,19 +105,18 @@ class Population:
         median_notes = [int(mode([x[i] for x in self.population]), ) for i in range(0,self.nr_of_notes)]
         scores = [0,0,0,0,0,0,0]
 
-        """
         # Original score criteria
-        # The melody should approach and follow  big leaps (larger than a second) in a counter step-wise motion
+        # The melody should approach and follow big leaps (larger than a second) in a counter step-wise motion
         for i in range(1, len(leaps)-1):
             if abs_leaps[i] > 1:
                 if leaps[i] > 0:
                     if leaps[i-1] < 0 and leaps[i+1] < 0:
                         score += 1/len(leaps)
-                        scores[0] += 1/(len(leaps)-2)
+                        scores[0] += 1/(len(leaps))
                 if leaps[i] < 0:
                     if leaps[i-1] > 0 and leaps[i+1] > 0:
                         score += 1/len(leaps)
-                        scores[0] += 1 / (len(leaps)-2)
+                        scores[0] += 1 / (len(leaps))
 
         # Where the melody presents big leaps, notes should belong to the underlying chord
         big_leap_indices = [(i,i+1) for i in range(0,self.nr_of_notes-1)]
@@ -125,8 +124,9 @@ class Population:
             # Right now the implementation is such that a point is assigned if the first note of the leap belongs to its
             # chord, and the second note belongs to the chord of the first
             if melody[i[0]] in exact_chords[i[0]//self.notes_per_chord] and melody[i[1]] in exact_chords[i[0]//self.notes_per_chord]:
-                score += 1/len(leaps)
-                scores[1] += 1 / len(leaps)
+                #if abs(melody[i[0]] - melody[i[1]]) > 1:
+                    score += 1/len(leaps)
+                    scores[1] += 1 / len(leaps)
 
         # The first note played on a chord should be part of the chord
         fn = 1 * (sum([1 for i in range(self.nr_of_chords) if melody[i*self.notes_per_chord] in exact_chords[i]]) / self.nr_of_chords)
@@ -154,8 +154,8 @@ class Population:
         anti_incest = 1 * sum([1 for i in range(0,self.nr_of_notes) if melody[i] != median_notes[i]]) / self.nr_of_notes
         score += anti_incest
         scores[6] += anti_incest
-        """
-        #print(scores)
+
+        print(scores)
         return score
 
     def export_to_mp3(self):

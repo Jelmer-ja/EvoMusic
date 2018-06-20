@@ -12,9 +12,9 @@ def main():
     #pop = Population(population_size=100, nr_of_chords=4, epochs=100)
     #statistics_mutation()
     #statistics_dims()
-    #statistics_env()
+    statistics_env()
     #grid_search()
-    print_random_list()
+    #print_random_list()
 
 
 def print_random_list():
@@ -115,9 +115,9 @@ def statistics_dims():
 
 
 def statistics_env():
-    env_pressures = [1, 2, 3, 4, 5, 10, 15]
+    env_pressures = [2, 3, 4, 5, 10, 15]
     avgs = []; highs = []; stds = []; uns = []
-    for i in range(0, len(mutation_rates)):
+    for i in range(0, len(env_pressures)):
         pop = Population(population_size=100, nr_of_chords=4, epochs=100, env_pressure=env_pressures[i])
         avg, highest, std, uniques = pop.get_results()
         avgs.append(avg)
@@ -125,21 +125,21 @@ def statistics_env():
         stds.append(std)
         uns.append(uniques)
 
-    plt.plot(mutation_rates, avgs)
-    plt.plot(mutation_rates, highs)
+    plt.plot(env_pressures, avgs)
+    plt.plot(env_pressures, highs)
     plt.legend(['Average fitness', 'Highest fitness'])
     plt.xlabel('Environmental pressure')
     plt.ylabel('Average score')
     plt.show()
 
     plt.clf()
-    plt.plot(mutation_rates, uns)
+    plt.plot(env_pressures, uns)
     plt.xlabel('Environmental pressure')
     plt.ylabel('Nr of unique individual in population')
     plt.show()
 
     plt.clf()
-    plt.plot(mutation_rates, stds)
+    plt.plot(env_pressures, stds)
     plt.xlabel('Environmental pressure')
     plt.ylabel('Standard deviation')
     plt.show()
